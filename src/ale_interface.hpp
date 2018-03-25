@@ -145,6 +145,12 @@ public:
 
   // Returns the current RAM content
   const ALERAM &getRAM();
+  
+  // Sets new bytes in the emulator RAM 
+  void alterEmulatorRAM(const ALERAM& ram);
+  
+  // Sets new goal position as termination condition.
+  void setGoalPosition(int coord_x, int coord_y);
 
   // Saves the state of the system
   void saveState();

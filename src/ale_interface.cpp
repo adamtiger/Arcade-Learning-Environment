@@ -367,6 +367,16 @@ const ALERAM& ALEInterface::getRAM() {
   return environment->getRAM();
 }
 
+// Sets new bytes in the emulator RAM 
+void ALEInterface::alterEmulatorRAM(const ALERAM& ram){
+	environment->alterEmulatorRAM(ram);
+}
+
+// Sets new goal position as termination condition.
+void ALEInterface::setGoalPosition(int coord_x, int coord_y){
+  romSettings->setGoalPosition(coord_x, coord_y);
+}
+
 // Saves the state of the system
 void ALEInterface::saveState() {
   environment->save();

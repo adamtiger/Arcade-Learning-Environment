@@ -1,5 +1,7 @@
 ## ALE
 
+ale.project
+ale.workspace
 ale
 build
 doc/examples/*Example

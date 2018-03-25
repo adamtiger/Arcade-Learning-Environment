@@ -63,6 +63,19 @@ extern "C" {
     int size = ale->getRAM().size();
     memcpy(ram,ale_ram,size*sizeof(unsigned char));
   }
+  
+  void alterEmulatorRAM(ALEInterface *ale, unsigned char *ram){
+	  ALERAM temp;
+	  unsigned char* temp_ram = temp.array();
+	  int size = temp.size();
+	  memcpy(temp_ram, ram, size*sizeof(unsigned char));
+	  ale->alterEmulatorRAM(temp);
+  }
+  
+  void setGoalPosition(ALEInterface *ale, int coord_x, int coord_y){
+	  ale->setGoalPosition(coord_x, coord_y);
+  }
+  
   int getRAMSize(ALEInterface *ale){return ale->getRAM().size();}
   int getScreenWidth(ALEInterface *ale){return ale->getScreen().width();}
   int getScreenHeight(ALEInterface *ale){return ale->getScreen().height();}

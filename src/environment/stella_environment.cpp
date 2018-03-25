@@ -261,6 +261,14 @@ const ALEState& StellaEnvironment::getState() const {
   return m_state;
 }
 
+void StellaEnvironment::alterEmulatorRAM(const ALERAM& ram) {
+	
+	m_ram = ram;
+	for (size_t idx = 0; idx < m_ram.size(); ++idx){
+		m_osystem->console().system().poke(idx + 0x80, *m_ram.byte(idx));
+	}
+}
+
 std::unique_ptr<StellaEnvironmentWrapper> StellaEnvironment::getWrapper() {
     return std::unique_ptr<StellaEnvironmentWrapper>(new StellaEnvironmentWrapper(*this));
 }

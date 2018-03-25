@@ -106,6 +106,10 @@ public:
     // Returns a list of difficulties that the game can be played in.
     // By default, there is only one available difficulty.
     virtual DifficultyVect getAvailableDifficulties();
+	
+	// Sets the given position as the termination condition.
+	// The reward is calculated according to the goal state.
+	virtual void setGoalPosition(int coord_x, int coord_y){}
 };
 
 
