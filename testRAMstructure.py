@@ -77,7 +77,7 @@ for idx in range(0, diff.shape[0]):
 
 ale.reset_game()
 ram = ale.getRAM()
-ram[16] = 99
+ram[16] = 98
 ram[10] = 66
 ale.alterEmulatorRAM(ram)
 ale.act(1)
