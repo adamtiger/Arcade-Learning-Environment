@@ -1,5 +1,8 @@
 ## ALE
 
+ale_python_interface/__pycache__/
+*.bin
+*.csv
 ale.project
 ale.workspace
 ale

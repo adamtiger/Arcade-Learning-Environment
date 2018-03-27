@@ -265,21 +265,21 @@ class ALEInterface(object):
         ale_lib.getRAM(self.obj, as_ctypes(ram))
         return ram
 
-	def alterEmulatorRAM(self, ram):
-		"""This function changes the atari RAM in the emulator level.
+    def alterEmulatorRAM(self, ram):
+        """This function changes the atari RAM in the emulator level.
         ram MUST be a numpy array of uint8/int8. This can be initialized like so:
         ram = np.array(ram_size, dtype=uint8)
         """
-		assert(ram.size == ale_lib.getRAMSize(self.obj))
-		ale_lib.alterEmulatorRAM(self.obj, as_ctypes(ram))
+        assert(ram.size == ale_lib.getRAMSize(self.obj))
+        ale_lib.alterEmulatorRAM(self.obj, as_ctypes(ram))
 	
-	def setGoalPosition(self, coord_x, coord_y):
-		"""This function sets a special position on the screen 
-		as a goal state. Then the reward function returns rewards
-		to encourage the agent to achieve that state.
-		"""
+    def setGoalPosition(self, coord_x, coord_y):
+        """This function sets a special position on the screen 
+        as a goal state. Then the reward function returns rewards
+        to encourage the agent to achieve that state.
+        """
 
-		ale_lib.setGoalPosition(self.obj, coord_x, coord_y)
+        ale_lib.setGoalPosition(self.obj, coord_x, coord_y)
 
     def saveScreenPNG(self, filename):
         """Save the current screen as a png file"""
