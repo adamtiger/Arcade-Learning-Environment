@@ -21,9 +21,8 @@
 #include "../emucore/OSystem.hxx"
 #include "../emucore/Event.hxx"
 #include <string>
+#include "../games/RomSettings.hpp"
 #include "../common/Log.hpp"
-
-class RomSettings;
 
 #define PADDLE_DELTA 23000
 // MGB Values taken from Paddles.cxx (Stella 3.3) - 1400000 * [5,235] / 255
@@ -37,7 +36,7 @@ class ALEState {
   public:
     ALEState();
     // Makes a copy of this state, also storing emulator information provided as a string
-    ALEState(const ALEState &rhs, const std::string &serialized);
+    ALEState(const ALEState &rhs, std::string serialized);
 
     // Restores a serialized ALEState
     ALEState(const std::string &serialized);
@@ -51,9 +50,6 @@ class ALEState {
 
     void resetPaddles(Event*);
 
-    //Apply the special select action
-    void pressSelect(Event* event_obj);
-
     /** Applies paddle actions. This actually modifies the game state by updating the paddle
       *  resistances. */
     void applyActionPaddles(Event* event_obj, int player_a_action, int player_b_action);
@@ -61,29 +57,14 @@ class ALEState {
     void setActionJoysticks(Event* event_obj, int player_a_action, int player_b_action);
 
     void incrementFrame(int steps = 1);
-
+    
     void resetEpisodeFrameNumber();
-
+    
     //Get the frames executed so far
-    int getFrameNumber() const { return m_frame_number;   }
+    const int getFrameNumber() const { return m_frame_number;   }
 
     //Get the number of frames executed this episode.
-    int getEpisodeFrameNumber() const { return m_episode_frame_number; }
-
-    /** set the difficulty according to the value.
-      * If the first bit is 1, then it will put the left difficulty switch to A (otherwise leave it on B)
-      * If the second bit is 1, then it will put the right difficulty switch to A (otherwise leave it on B)
-      */
-    void setDifficulty(unsigned int value) { m_difficulty = value; }
-
-    // Returns the current difficulty setting.
-    unsigned int getDifficulty() const { return m_difficulty; }
-
-    //Save the current mode we are supposed to be in.
-    void setCurrentMode(game_mode_t value) { m_mode = value; }
-
-    //Get the current mode we are in.
-    game_mode_t getCurrentMode() const { return m_mode; }
+    const int getEpisodeFrameNumber() const { return m_episode_frame_number; }
 
     std::string serialize();
 
@@ -113,10 +94,7 @@ class ALEState {
 
     /** Calculates the Paddle resistance, based on the given x val */
     int calcPaddleResistance(int x_val);
-
-    /** Applies the current difficulty setting, which is effectively part of the action */
-    void setDifficultySwitches(Event* event_obj, unsigned int value);
-
+  
   private:
     int m_left_paddle;   // Current value for the left-paddle
     int m_right_paddle;  // Current value for the right-paddle
@@ -126,10 +104,8 @@ class ALEState {
 
     std::string m_serialized_state; // The stored environment state, if this is a saved state
 
-    game_mode_t m_mode; //The current mode we are in
-    difficulty_t m_difficulty; //The current difficulty we are in
-
 };
 
 #endif // __ALE_STATE_HPP__
+
 

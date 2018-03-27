@@ -1,6 +1,4 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
- *
  * A.L.E (Arcade Learning Environment)
  * Copyright (c) 2009-2013 by Yavar Naddaf, Joel Veness, Marc G. Bellemare and 
  *   the Reinforcement Learning and Artificial Intelligence Laboratory
@@ -118,8 +116,4 @@ ActionVect JourneyEscapeSettings::getStartingActions() {
     return startingActions;
 }
 
-DifficultyVect JourneyEscapeSettings::getAvailableDifficulties() {
-    DifficultyVect diff = {0, 1};
-    return diff;
-}
 

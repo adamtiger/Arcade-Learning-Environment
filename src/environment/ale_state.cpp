@@ -12,12 +12,9 @@
 #include "ale_state.hpp"
 #include "../emucore/m6502/src/System.hxx"
 #include "../emucore/Event.hxx"
-#include "../emucore/Deserializer.hxx"
-#include "../emucore/Serializer.hxx"
 #include "../common/Constants.h"
-#include "../games/RomSettings.hpp"
+using namespace std;
 
-#include <sstream>
 #include <stdexcept>
 
 /** Default constructor - loads settings from system */ 
@@ -25,19 +22,15 @@ ALEState::ALEState():
   m_left_paddle(PADDLE_DEFAULT_VALUE),
   m_right_paddle(PADDLE_DEFAULT_VALUE),
   m_frame_number(0),
-  m_episode_frame_number(0),
-  m_mode(0),
-  m_difficulty(0) {
+  m_episode_frame_number(0) {
 }
 
-ALEState::ALEState(const ALEState &rhs, const std::string &serialized):
+ALEState::ALEState(const ALEState &rhs, std::string serialized):
   m_left_paddle(rhs.m_left_paddle),
   m_right_paddle(rhs.m_right_paddle),
   m_frame_number(rhs.m_frame_number),
   m_episode_frame_number(rhs.m_episode_frame_number),
-  m_serialized_state(serialized),
-  m_mode(rhs.m_mode),
-  m_difficulty(rhs.m_difficulty) {
+  m_serialized_state(serialized) {
 }
 
 ALEState::ALEState(const std::string &serialized) {
@@ -46,8 +39,6 @@ ALEState::ALEState(const std::string &serialized) {
   this->m_right_paddle = des.getInt();
   this->m_frame_number = des.getInt();
   this->m_episode_frame_number = des.getInt();
-  this->m_mode = des.getInt();
-  this->m_difficulty = des.getInt();
   this->m_serialized_state = des.getString();
 }
 
@@ -74,10 +65,8 @@ void ALEState::load(OSystem* osystem, RomSettings* settings, std::string md5, co
   // Copy over other member variables
   m_left_paddle = rhs.m_left_paddle; 
   m_right_paddle = rhs.m_right_paddle; 
-  m_frame_number = rhs.m_frame_number; 
   m_episode_frame_number = rhs.m_episode_frame_number;
-  m_mode = rhs.m_mode;
-  m_difficulty = rhs.m_difficulty;
+  m_frame_number = rhs.m_frame_number; 
 }
 
 ALEState ALEState::save(OSystem* osystem, RomSettings* settings, std::string md5, 
@@ -113,8 +102,6 @@ std::string ALEState::serialize() {
   ser.putInt(this->m_right_paddle);
   ser.putInt(this->m_frame_number);
   ser.putInt(this->m_episode_frame_number);
-  ser.putInt(this->m_mode);
-  ser.putInt(this->m_difficulty);
   ser.putString(this->m_serialized_state);
 
   return ser.get_str();
@@ -270,20 +257,6 @@ void ALEState::applyActionPaddles(Event* event, int player_a_action, int player_
       // Nothing
       break;
   }
-}
-
-void ALEState::pressSelect(Event* event) {
-  resetKeys(event);
-  event->set(Event::ConsoleSelect, 1);
-}
-
-void ALEState::setDifficultySwitches(Event* event, unsigned int value) {
-  // The difficulty switches stay in their position from time step to time step.
-  // This means we don't call resetKeys() when setting their values.
-  event->set(Event::ConsoleLeftDifficultyA, value & 1);
-  event->set(Event::ConsoleLeftDifficultyB, !(value & 1));
-  event->set(Event::ConsoleRightDifficultyA, (value & 2) >> 1);
-  event->set(Event::ConsoleRightDifficultyB, !((value & 2) >> 1));
 }
 
 void ALEState::setActionJoysticks(Event* event, int player_a_action, int player_b_action) {
@@ -475,21 +448,20 @@ void ALEState::setActionJoysticks(Event* event, int player_a_action, int player_
           break; 
       case RESET:
           event->set(Event::ConsoleReset, 1);
-          ale::Logger::Info << "Sending Reset..." << std::endl;
+          ale::Logger::Info << "Sending Reset..." << endl;
           break;
       default: 
-          ale::Logger::Error << "Invalid Player B Action: " << player_b_action << std::endl;
+          ale::Logger::Error << "Invalid Player B Action: " << player_b_action << endl;
           exit(-1); 
   }
 }
 
 /* ***************************************************************************
     Function resetKeys 
-    Unpresses all control-relevant keys
+    Unpresses all control-relavant keys
  * ***************************************************************************/
 void ALEState::resetKeys(Event* event) {
     event->set(Event::ConsoleReset, 0);
-    event->set(Event::ConsoleSelect, 0);
     event->set(Event::JoystickZeroFire, 0);
     event->set(Event::JoystickZeroUp, 0);
     event->set(Event::JoystickZeroDown, 0);
@@ -504,9 +476,6 @@ void ALEState::resetKeys(Event* event) {
     // also reset paddle fire
     event->set(Event::PaddleZeroFire, 0);
     event->set(Event::PaddleOneFire, 0);
-
-    // Set the difficulty switches accordingly for this time step.
-    setDifficultySwitches(event, m_difficulty);
 }
 
 bool ALEState::equals(ALEState &rhs) {
@@ -514,7 +483,5 @@ bool ALEState::equals(ALEState &rhs) {
     rhs.m_left_paddle == this->m_left_paddle &&
     rhs.m_right_paddle == this->m_right_paddle &&
     rhs.m_frame_number == this->m_frame_number &&
-    rhs.m_episode_frame_number == this->m_episode_frame_number &&
-    rhs.m_mode == this->m_mode &&
-    rhs.m_difficulty == this->m_difficulty);
+    rhs.m_episode_frame_number == this->m_episode_frame_number);
 }

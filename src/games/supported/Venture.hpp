@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 67 and 74 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -64,11 +64,7 @@ class VentureSettings : public RomSettings {
         // loads the state of the rom settings
         void loadState(Deserializer & ser);
 
-        virtual int lives() { return isTerminal() ? 0 : m_lives; }
-
-        // returns a list of difficulties that the game can be played in
-        // in this game, there are 2 available difficulties
-        DifficultyVect getAvailableDifficulties();
+        virtual const int lives() { return isTerminal() ? 0 : m_lives; }
 
     private:
 

@@ -66,7 +66,7 @@ class EnduroSettings : public RomSettings {
 
         ActionVect getStartingActions();
 
-        virtual int lives() { return 0; }
+        virtual const int lives() { return 0; }
 
     private:
 

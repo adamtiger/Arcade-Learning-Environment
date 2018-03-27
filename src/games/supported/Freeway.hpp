@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The line 67 is based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -27,7 +27,6 @@
 #ifndef __FREEWAY_HPP__
 #define __FREEWAY_HPP__
 
-#include "stella_environment_wrapper.hpp"
 #include "../RomSettings.hpp"
 
 
@@ -50,9 +49,6 @@ class FreewaySettings : public RomSettings {
         // the rom-name
         const char* rom() const { return "freeway"; }
 
-        // get the available number of modes
-        unsigned int getNumModes() const { return 8; }
-
         // create a new instance of the rom
         RomSettings* clone() const;
 
@@ -68,22 +64,10 @@ class FreewaySettings : public RomSettings {
         // loads the state of the rom settings
         void loadState(Deserializer & ser);
 
-        virtual int lives() { return 0; }
-
-        // returns a list of mode that the game can be played in
-        // in this game, there are 8 available modes
-        ModeVect getAvailableModes();
-
-        // set the mode of the game
-        // the given mode must be one returned by the previous function
-        void setMode(game_mode_t, System &system,
-                     std::unique_ptr<StellaEnvironmentWrapper> environment); 
-
-        // returns a list of difficulties that the game can be played in
-        // in this game, there are 2 available difficulties
-        DifficultyVect getAvailableDifficulties();
+        virtual const int lives() { return 0; }
 
     private:
+
         bool m_terminal;
         reward_t m_reward;
         reward_t m_score;

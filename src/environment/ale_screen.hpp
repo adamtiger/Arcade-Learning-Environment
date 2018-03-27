@@ -18,8 +18,7 @@
 #ifndef __ALE_SCREEN_HPP__
 #define __ALE_SCREEN_HPP__
 
-#include <cassert>
-#include <cstring>
+#include <string.h>
 #include <memory>
 #include <vector>
 

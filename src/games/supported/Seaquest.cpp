@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 57, 110, 119 and 127 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -127,7 +127,3 @@ void SeaquestSettings::loadState(Deserializer & ser) {
   m_lives = ser.getInt();
 }
 
-DifficultyVect SeaquestSettings::getAvailableDifficulties() {
-    DifficultyVect diff = {0, 1};
-    return diff;
-}

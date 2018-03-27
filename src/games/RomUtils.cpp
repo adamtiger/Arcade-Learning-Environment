@@ -29,6 +29,14 @@ int readRam(const System* system, int offset) {
     return sys->peek((offset & 0x7F) + 0x80);
 }
 
+// writes a byte at a memory location between 0 and 128
+void writeRam(System* system, int offset, unsigned char value) {
+	
+	// 0x7F because the RAM is 128 byte long
+	// 0x80 because the RAM for the game starts at 0x80
+	system->poke((offset & 0x7F) + 0x80, value);
+}
+
 /* extracts a decimal value from a byte */
 int getDecimalScore(int index, const System* system) {
     

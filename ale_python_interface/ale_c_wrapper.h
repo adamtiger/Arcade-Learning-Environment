@@ -5,6 +5,7 @@
 
 extern "C" {
   // Declares int rgb_palette[256]
+  #include "atari_ntsc_rgb_palette.h"
   ALEInterface *ALE_new() {return new ALEInterface();}
   void ALE_del(ALEInterface *ale){delete ale;}
   const char *getString(ALEInterface *ale, const char *key){return ale->getString(key).c_str();}
@@ -19,25 +20,9 @@ extern "C" {
   int act(ALEInterface *ale,int action){return ale->act((Action)action);}
   bool game_over(ALEInterface *ale){return ale->game_over();}
   void reset_game(ALEInterface *ale){ale->reset_game();}
-  void getAvailableModes(ALEInterface *ale,int *availableModes) {
-    ModeVect modes_vect = ale->getAvailableModes();
-    for(unsigned int i = 0; i < ale->getAvailableModes().size(); i++){
-      availableModes[i] = modes_vect[i];
-    }
-  }
-  int getAvailableModesSize(ALEInterface *ale) {return ale->getAvailableModes().size();}
-  void setMode(ALEInterface *ale, int mode) {ale->setMode(mode);}
-  void getAvailableDifficulties(ALEInterface *ale,int *availableDifficulties) {
-    DifficultyVect difficulties_vect = ale->getAvailableDifficulties();
-    for(unsigned int i = 0; i < ale->getAvailableDifficulties().size(); i++){
-      availableDifficulties[i] = difficulties_vect[i];
-    }
-  }
-  int getAvailableDifficultiesSize(ALEInterface *ale) {return ale->getAvailableDifficulties().size();}
-  void setDifficulty(ALEInterface *ale, int difficulty) {ale->setDifficulty(difficulty);}
-  void getLegalActionSet(ALEInterface *ale,int *actions) {
+  void getLegalActionSet(ALEInterface *ale,int *actions){
     ActionVect action_vect = ale->getLegalActionSet();
-    for(unsigned int i = 0; i < ale->getLegalActionSet().size(); i++){
+    for(unsigned int i = 0;i < ale->getLegalActionSet().size();i++){
       actions[i] = action_vect[i];
     }
   }
@@ -72,8 +57,8 @@ extern "C" {
 	  ale->alterEmulatorRAM(temp);
   }
   
-  void setGoalPosition(ALEInterface *ale, int coord_x, int coord_y){
-	  ale->setGoalPosition(coord_x, coord_y);
+  void setStartandGoalPosition(ALEInterface *ale, int start_x, int start_y, int goal_x, int goal_y){
+	  ale->setStartandGoalPosition(start_x, start_y, goal_x, goal_y);
   }
   
   int getRAMSize(ALEInterface *ale){return ale->getRAM().size();}
@@ -86,7 +71,22 @@ extern "C" {
     size_t screen_size = w*h;
     pixel_t *ale_screen_data = ale->getScreen().getArray();
 
-    ale->theOSystem->colourPalette().applyPaletteRGB(output_buffer, ale_screen_data, screen_size );
+    ale->theOSystem->colourPalette().applyPaletteRGB(output_buffer, ale_screen_data, screen_size);
+  }
+
+  void getScreenRGB2(ALEInterface *ale, unsigned char *output_buffer){
+    size_t w = ale->getScreen().width();
+    size_t h = ale->getScreen().height();
+    size_t screen_size = w*h;
+    pixel_t *ale_screen_data = ale->getScreen().getArray();
+
+    int j = 0;
+    for(int i = 0;i < screen_size;i++){
+        unsigned int zrgb = rgb_palette[ale_screen_data[i]];
+        output_buffer[j++] = (zrgb>>16)&0xff;
+        output_buffer[j++] = (zrgb>>8)&0xff;
+        output_buffer[j++] = (zrgb>>0)&0xff;
+    }
   }
 
   void getScreenGrayscale(ALEInterface *ale, unsigned char *output_buffer){

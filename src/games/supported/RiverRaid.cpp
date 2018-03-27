@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 84 - 91 and 143 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -159,9 +159,3 @@ void RiverRaidSettings::loadState(Deserializer & ser) {
   m_terminal = ser.getBool();
   m_lives_byte = ser.getInt();
 }
-
-DifficultyVect RiverRaidSettings::getAvailableDifficulties() {
-    DifficultyVect diff = {0, 1};
-    return diff;
-}
-

@@ -33,26 +33,19 @@
 #ifndef __ROMSETTINGS_HPP__
 #define __ROMSETTINGS_HPP__
 
-#include <memory>
-#include <stdexcept>
-
 #include "../common/Constants.h"
 #include "../emucore/Serializer.hxx"
 #include "../emucore/Deserializer.hxx"
-#include "../environment/stella_environment_wrapper.hpp"
 
 class System;
 
+
 // rom support interface
-class RomSettings {
-
-public:
-    RomSettings();
-
+struct RomSettings {
     virtual ~RomSettings() {}
 
     // reset
-    virtual void reset(){};
+    virtual void reset() = 0;
 
     // is end of game
     virtual bool isTerminal() const = 0;
@@ -71,6 +64,10 @@ public:
 
     // process the latest information from ALE
     virtual void step(const System &system) = 0;
+	
+	// resets the agent position when failed in
+	// an epsiode but that is not the terminal
+	virtual void resetWhenFailed(System &system) {}
 
     // saves the state of the rom settings
     virtual void saveState(Serializer & ser) = 0;
@@ -82,7 +79,7 @@ public:
     virtual bool isLegal(const Action &a) const;
 
     // Remaining lives.
-    virtual int lives() { return isTerminal() ? 0 : 1; }
+    virtual const int lives() { return isTerminal() ? 0 : 1; }
 
     // Returns a restricted (minimal) set of actions. If not overriden, this is all actions.
     virtual ActionVect getMinimalActionSet();
@@ -94,22 +91,10 @@ public:
     // By default this is an empty list.
     virtual ActionVect getStartingActions();
 
-    // Returns a list of mode that the game can be played in. 
-    // By default, there is only one available mode.
-    virtual ModeVect getAvailableModes();
-
-    // Set the mode of the game. The given mode must be
-    // one returned by the previous function.
-    virtual void setMode(game_mode_t, System &system,
-                         std::unique_ptr<StellaEnvironmentWrapper> environment);
-
-    // Returns a list of difficulties that the game can be played in.
-    // By default, there is only one available difficulty.
-    virtual DifficultyVect getAvailableDifficulties();
-	
-	// Sets the given position as the termination condition.
-	// The reward is calculated according to the goal state.
-	virtual void setGoalPosition(int coord_x, int coord_y){}
+    // Sets the given position as the termination condition.
+    // The reward is calculated according to the goal state.
+    virtual void setStartandGoalPosition(int start_x, int start_y,
+										 int goal_x, int goal_y){}
 };
 
 

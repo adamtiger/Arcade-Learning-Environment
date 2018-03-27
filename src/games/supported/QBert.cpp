@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 57, 59, 115, 124 and 133 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -131,10 +131,5 @@ void QBertSettings::loadState(Deserializer & ser) {
   m_terminal = ser.getBool();
   m_last_lives = ser.getInt();
   m_lives = ser.getInt();
-}
-
-DifficultyVect QBertSettings::getAvailableDifficulties() {
-    DifficultyVect diff = {0, 1};
-    return diff;
 }
 

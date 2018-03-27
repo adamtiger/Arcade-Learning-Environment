@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The line 69 is based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -49,9 +49,6 @@ class DoubleDunkSettings : public RomSettings {
         // the rom-name
         const char* rom() const { return "double_dunk"; }
 
-        // get the available number of modes
-        unsigned int getNumModes() const { return 16; }
-
         // create a new instance of the rom
         RomSettings* clone() const;
 
@@ -69,38 +66,13 @@ class DoubleDunkSettings : public RomSettings {
 
         ActionVect getStartingActions();
 
-        virtual int lives() { return 0; }
-
-        // returns a list of mode that the game can be played in
-        // in this game, there are 16 available modes
-        ModeVect getAvailableModes();
-
-        // set the mode of the game
-        // the given mode must be one returned by the previous function
-        void setMode(game_mode_t, System &system,
-                     std::unique_ptr<StellaEnvironmentWrapper> environment); 
-
+        virtual const int lives() { return 0; }
 
     private:
 
         bool m_terminal;
         reward_t m_reward;
         reward_t m_score;
-
-        // this game has a menu that allows to define various yes/no options
-        // this function goes to the next option in the menu
-        void goDown(System &system,
-            std::unique_ptr<StellaEnvironmentWrapper> &environment);
-
-        // once we are at the proper option in the menu,
-        // if we want to enable it all we have to do is to go right
-        void activateOption(System &system, unsigned int bitOfInterest,
-            std::unique_ptr<StellaEnvironmentWrapper> &environment);
-
-        // once we are at the proper optio in the menu,
-        // if we want to disable it all we have to do is to go left
-        void deactivateOption(System &system, unsigned int bitOfInterest,
-            std::unique_ptr<StellaEnvironmentWrapper> &environment);
 };
 
 #endif // __DOUBLEDUNK_HPP__

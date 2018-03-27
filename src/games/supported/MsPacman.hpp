@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 67 and 74 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -49,9 +49,6 @@ class MsPacmanSettings : public RomSettings {
         // the rom-name
         const char* rom() const { return "ms_pacman"; }
 
-        // get the available number of modes
-        unsigned int getNumModes() const { return 4; }
-
         // create a new instance of the rom
         RomSettings* clone() const;
 
@@ -60,6 +57,10 @@ class MsPacmanSettings : public RomSettings {
 
         // process the latest information from ALE
         void step(const System& system);
+		
+        // resets the agent position when failed in
+        // an epsiode but that is not the terminal
+        void resetWhenFailed(System &system);
 
         // saves the state of the rom settings
         void saveState(Serializer & ser);
@@ -67,16 +68,10 @@ class MsPacmanSettings : public RomSettings {
         // loads the state of the rom settings
         void loadState(Deserializer & ser);
 
-        virtual int lives() { return isTerminal() ? 0 : m_lives; }
-
-        // returns a list of mode that the game can be played in
-        // in this game, there are 8 available modes
-        ModeVect getAvailableModes();
-
-        // set the mode of the game
-        // the given mode must be one returned by the previous function
-        void setMode(game_mode_t, System &system,
-                     std::unique_ptr<StellaEnvironmentWrapper> environment); 
+        virtual const int lives() { return isTerminal() ? 0 : m_lives; }
+		
+		void setStartandGoalPosition(int start_x, int start_y,
+										 int goal_x, int goal_y);
 
     private:
 
@@ -84,6 +79,9 @@ class MsPacmanSettings : public RomSettings {
         reward_t m_reward;
         reward_t m_score;
         int m_lives;
+        
+        int start_x, start_y;
+        int goal_x, goal_y;
 };
 
 #endif // __MSPACMAN_HPP__

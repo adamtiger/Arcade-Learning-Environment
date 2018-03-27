@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * The method lives() is based on Xitari's code, from Google Inc.
+ * The lines 62, 106, 116 and 124 are based on Xitari's code, from Google Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -28,6 +28,8 @@
 
 #include "../RomUtils.hpp"
 
+#include <math.h>
+
 
 MsPacmanSettings::MsPacmanSettings() {
 
@@ -48,18 +50,26 @@ RomSettings* MsPacmanSettings::clone() const {
 void MsPacmanSettings::step(const System& system) {
 
     // update the reward
+    /*
     int score = getDecimalScore(0xF8, 0xF9, 0xFA, &system);
     int reward = score - m_score;
     m_reward = reward;
     m_score = score;
-
+    */
+    
+    int x = readRam(&system, 0xA);
+    int y = readRam(&system, 0x10);
+    bool achieved_goal = (abs(x - goal_x) < 5 && abs(y - goal_y) < 5);
+    
     // update terminal status
     int lives_byte = readRam(&system, 0xFB) & 0xF;
     // MGB Did not work int black_screen_byte = readRam(&system, 0x94);
     int death_timer = readRam(&system, 0xA7);
-    m_terminal = (lives_byte == 0 && death_timer == 0x53);
+    m_terminal = m_terminal || achieved_goal || (lives_byte == 0 && death_timer == 0x53);
 
     m_lives = (lives_byte & 0x7) + 1; 
+    
+    m_reward = achieved_goal ? 1 : 0;
 }
 
 
@@ -106,8 +116,6 @@ void MsPacmanSettings::reset() {
     m_lives    = 3;
 }
 
-
-        
 /* saves the state of the rom settings */
 void MsPacmanSettings::saveState(Serializer & ser) {
   ser.putInt(m_reward);
@@ -124,50 +132,17 @@ void MsPacmanSettings::loadState(Deserializer & ser) {
   m_lives = ser.getInt();
 }
 
-// returns a list of mode that the game can be played in
-ModeVect MsPacmanSettings::getAvailableModes() {
-    ModeVect modes(getNumModes());
-    for (unsigned int i = 0; i < modes.size(); i++) {
-        modes[i] = i;
-    }
-    return modes;
+void MsPacmanSettings::resetWhenFailed(System &system){
+  int temp = ((readRam(&system, 0xFB) & 0xF) & 0x7) + 1;
+  if(m_lives > temp){
+      writeRam(&system, 0xA, start_x);  // horizontal offset for the position
+      writeRam(&system, 0x10, start_y);
+  } 
 }
 
-// set the mode of the game
-// the given mode must be one returned by the previous function
-void MsPacmanSettings::setMode(game_mode_t m, System &system,
-                              std::unique_ptr<StellaEnvironmentWrapper> environment) {
-
-    if(m < getNumModes()) {
-        if(m == 0) { //this is the standard variation of the game
-            // read the mode we are currently in
-            unsigned char mode = readRam(&system, 0x99);
-            // read the variation
-            unsigned char var = readRam(&system, 0xA1);
-            // press select until the correct mode is reached
-            while(mode != 1 || var != 1) {
-                // hold select button for 10 frames
-                environment->pressSelect(10);
-                mode = readRam(&system, 0x99);
-                var = readRam(&system, 0xA1);
-            }
-        } else {
-            // read the mode we are currently in
-            unsigned char mode = readRam(&system, 0x99);
-            // read the variation
-            unsigned char var = readRam(&system, 0xA1);
-            // press select until the correct mode is reached
-            while(mode != m || var != 0) {
-                // hold select button for 10 frames
-                environment->pressSelect(10);
-                mode = readRam(&system, 0x99);
-                var = readRam(&system, 0xA1);
-            }
-        }
-        //reset the environment to apply changes.
-        environment->softReset();
-    }
-    else {
-        throw std::runtime_error("This mode doesn't currently exist for this game");
-    }
- }
+void MsPacmanSettings::setStartandGoalPosition(int start_x, int start_y, int goal_x, int goal_y) {
+  this->start_x = start_x;
+  this->start_y = start_y;
+  this->goal_x = goal_x;
+  this->goal_y = goal_y;
+}
