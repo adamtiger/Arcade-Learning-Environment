@@ -116,6 +116,14 @@ void MsPacmanSettings::reset() {
     m_lives    = 3;
 }
 
+/* reset with ability to alter the emulator RAM */
+void MsPacmanSettings::reset(System &system){
+    reset();
+    
+    writeRam(&system, 0xA, start_x);  // horizontal offset for the position
+    writeRam(&system, 0x10, start_y);
+}
+
 /* saves the state of the rom settings */
 void MsPacmanSettings::saveState(Serializer & ser) {
   ser.putInt(m_reward);

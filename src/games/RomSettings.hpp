@@ -46,6 +46,9 @@ struct RomSettings {
 
     // reset
     virtual void reset() = 0;
+    
+    // reset but dor the emulator as well
+    virtual void reset(System &system) { reset(); }
 
     // is end of game
     virtual bool isTerminal() const = 0;

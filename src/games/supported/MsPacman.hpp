@@ -39,6 +39,9 @@ class MsPacmanSettings : public RomSettings {
 
         // reset
         void reset();
+        
+        // reset with ability to alter the emulator RAM
+        void reset(System &system);
 
         // is end of game
         bool isTerminal() const;

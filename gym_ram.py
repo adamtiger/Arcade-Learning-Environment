@@ -3,9 +3,9 @@ import numpy as np
 import csv
 import time
 
-env = gym.make('MsPacman-ram-v0')
-env.reset()
+env = gym.make('GoalbasedMsPacman-ram-v0')
 env.setup((65, 98, 75, 98))
+env.reset()
 
 """
 exit = False
